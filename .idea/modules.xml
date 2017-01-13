@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/iplayer_renamer.iml" filepath="$PROJECT_DIR$/.idea/modules/iplayer_renamer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/iplayer_renamer-build.iml" filepath="$PROJECT_DIR$/.idea/modules/iplayer_renamer-build.iml" />
+    </modules>
+  </component>
+</project>
