@@ -9,7 +9,8 @@ class SimpleJson {
     doesExist match {
       case false =>
         val simpleFile = new SimpleFileTools
-        val settings = new PodSettings(simpleFile.getCurrentDirectory + "/podcasts",  simpleFile.getCurrentDirectory + "/podcast", Array("mp4", "m4a")).toJson
+        val settings = new PodSettings(simpleFile.getCurrentDirectory + simpleFile.getSeparator + "podcasts",
+          simpleFile.getCurrentDirectory + simpleFile.getSeparator + "podcast", Array("mp4", "m4a")).toJson
         simpleFile.CreateFile(filename, settings.toString)
         filename
       case _ => filename

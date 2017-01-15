@@ -8,13 +8,13 @@ import scala.io.Source
   * Created by Nenyi on 12/01/2017.
   */
 class SimpleFileTools {
-//  def getCurrentDirectory = new File(".").getCanonicalPath
 
   val x = new SimpleJson
   def codeSource = x.getClass.getProtectionDomain().getCodeSource()
   def jarFile = new File(codeSource.getLocation().toURI().getPath())
   def jarDir = jarFile.getParentFile().getPath()
   def getCurrentDirectory = new File(jarDir).toString
+  def getSeparator = File.separator
 
 
   def OpenAndReadFile(filename: String):String = {
@@ -73,7 +73,7 @@ class SimpleFileTools {
 
     def checkFolderId(folderId: String): String = {
       if (!Option(folderId).exists(_.trim.nonEmpty)) {
-        checkAndCreateParentDirectory(parent + "/0.1" )
+        checkAndCreateParentDirectory(parent + getSeparator +"0.1" )
         "0.1"
       }
       else {
@@ -94,7 +94,7 @@ class SimpleFileTools {
         }
       newId
     }
-    parent + "/" + checkFolderId(folderId)
+    parent + getSeparator + checkFolderId(folderId)
   }
 
   def convertToMB(size: Long): Long = {
@@ -112,7 +112,7 @@ class SimpleFileTools {
   def movePodcast(item: PodcastItem) = {
     val source = item.podcastFile.toPath
     val extension = item.podcastFile.getName.split('.').drop(-1).lastOption
-    val destination = new File(item.destDir + "/" + item.fileName).toPath
+    val destination = new File(item.destDir + getSeparator + item.fileName).toPath
     Files.move(source, destination, StandardCopyOption.ATOMIC_MOVE)
   }
 

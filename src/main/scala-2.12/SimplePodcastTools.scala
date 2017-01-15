@@ -11,7 +11,7 @@ class SimplePodcastTools {
 
   def processBBCPodcasts() = {
     val simpleJson = new SimpleJson
-    val filename = simpleFileTools.getCurrentDirectory + "/settings.json"
+    val filename = simpleFileTools.getCurrentDirectory + simpleFileTools.getSeparator + "settings.json"
     println(filename)
 
     val content = simpleFileTools OpenAndReadFile(simpleJson createSettingJson(simpleFileTools checkIfFileExists(filename), filename))
@@ -91,7 +91,7 @@ class SimplePodcastTools {
   def getPodcastDestination(item: PodcastItem, destDir: String): PodcastItem = {
     val mp4tag = item.podcastTag.asInstanceOf[Mp4Tag]
     val album = mp4tag.getFirst(Mp4FieldKey.ALBUM)
-    new PodcastItem(item.podcastFile, item.podcastTag, item.fileName, destDir + "/" + album)
+    new PodcastItem(item.podcastFile, item.podcastTag, item.fileName, destDir + simpleFileTools.getSeparator + album)
   }
 
   def mapPodcastDestination(item: PodcastItem): PodcastItem = {
