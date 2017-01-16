@@ -1,6 +1,9 @@
 import java.io._
 import java.io.{BufferedWriter, File, FileWriter}
 import java.nio.file.{Files, Paths, StandardCopyOption}
+import java.nio.file._
+
+import org.apache.commons.io.FileUtils
 
 import scala.io.Source
 
@@ -109,11 +112,18 @@ class SimpleFileTools {
     dir.listFiles().map(_.length).sum
   }
 
-  def movePodcast(item: PodcastItem) = {
+  def movePodcastLegacy(item: PodcastItem) = {
     val source = item.podcastFile.toPath
     val extension = item.podcastFile.getName.split('.').drop(-1).lastOption
     val destination = new File(item.destDir + getSeparator + item.fileName).toPath
     Files.move(source, destination, StandardCopyOption.ATOMIC_MOVE)
+  }
+
+  def movePodcast(item: PodcastItem) = {
+    val source = item.podcastFile.toString
+    val destination = item.destDir
+    FileUtils.moveFileToDirectory(
+      FileUtils.getFile(source), FileUtils.getFile(destination), true)
   }
 
 }
