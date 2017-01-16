@@ -64,9 +64,9 @@ class SimplePodcastTools {
     // this is the point where I have to find out which show I am searching for?
     val mp4tag = tag.asInstanceOf[Mp4Tag]
     val mp4Split = mp4tag.getFirst(Mp4FieldKey.TITLE).split(": ")
-    val artist: String = "(" + mp4Split.headOption.get + ")"
+    val artist: String = mp4Split.headOption match {case null => "" case a => "(" ++ a.get ++ ")"}
     val title = mp4Split.lastOption match {case null => "" case t => t.get}
-    val album = "(BBC Radio 1)-" + mp4Split.headOption
+    val album = mp4Split.headOption match {case null => "" case a => "(BBC Radio 1)-" ++ a.get}
     val genre = "Podcast"
     val fileName = artist + "-" + title.replaceAll("[^a-zA-Z0-9\\._ ]+", "")
     new PodcastItem(f, renamePodcastTags(mp4tag, new BBCTags(artist, title, album, album, genre)), fileName, "")
