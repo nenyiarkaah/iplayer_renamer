@@ -6,6 +6,7 @@ import java.nio.file._
 import org.apache.commons.io.FileUtils
 
 import scala.io.Source
+import scala.util.{Failure, Success, Try}
 
 /**
   * Created by Nenyi on 12/01/2017.
@@ -20,9 +21,16 @@ class SimpleFileTools {
   def getSeparator = File.separator
 
 
-  def OpenAndReadFile(filename: String):String = {
+  def OpenAndReadFile(filename: String): String = {
     val stream = new FileInputStream(filename)
-    try { Source.fromInputStream(stream).mkString } finally { stream.close }
+    ReadFile(stream) match {
+      case Success(fileString) => fileString
+      case Failure(f) => throw(f)
+    }
+  }
+
+  def ReadFile(stream: FileInputStream): Try[String] =  {
+    Try(Source.fromInputStream(stream).mkString)
   }
 
   def checkIfFileExists(filename: String): Boolean = {
@@ -44,7 +52,7 @@ class SimpleFileTools {
   def renameFile(item: PodcastItem): PodcastItem = {
     val file = item.podcastFile
     val extension = file.getName.split('.').drop(-1).lastOption
-    val fileName = file.getParent + "/" + item.fileName + "." + extension.get
+    val fileName = file.getParent + getSeparator + item.fileName + "." + extension.get
     val renamedFile = new File(fileName)
     file.renameTo(renamedFile)
     new PodcastItem(renamedFile, item.podcastTag, renamedFile.getName, item.destDir)
@@ -56,19 +64,19 @@ class SimpleFileTools {
       dir.mkdir()
   }
 
-  def matchValidDir(dirs: List[File], validDirs: List[File], parent: String): File = validDirs match {
-    case null => createNewPodcastDestination(dirs, parent)
+  def matchValidDir(dirs: List[File], validDirs: List[File], parent: String): Option[File] = validDirs match {
+//    case null => createNewPodcastDestination(dirs, parent)
     case Nil => createNewPodcastDestination(dirs, parent)
-    case _ => validDirs.head
+    case _ => validDirs.headOption
   }
 
-  def createNewPodcastDestination(dirs: List[File], parent: String): File = {
+  def createNewPodcastDestination(dirs: List[File], parent: String): Option[File] = {
     val file = dirs match {
       case List() => incrementAndCheckNewDirectory("", parent)
       case _ => incrementAndCheckNewDirectory(dirs.map(_.getName).sorted.last, dirs.map(_.getParent).sorted.last)
     }
     val dir = new File(file)
-    dir
+    Option(dir)
   }
 
   def incrementAndCheckNewDirectory(folderId: String, parent: String): String = {
@@ -85,10 +93,10 @@ class SimpleFileTools {
 
     }
     def increment(id: String): String = {
-      var splitId = id.split("\\.")
-      var integer = splitId.head.toInt
-      var decimal = splitId.last.toInt
-      var newId =
+      val splitId = id.split("\\.")
+      val integer = splitId.headOption.get.toInt
+      val decimal = splitId.lastOption.get.toInt
+      val newId =
         if (decimal == 9) {
           (integer + 1).toString + "." + 0.toString
         }
