@@ -2,6 +2,8 @@ import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.{FieldKey, Tag}
 import org.jaudiotagger.tag.mp4.{Mp4FieldKey, Mp4Tag}
 import java.io._
+
+import scala.collection.immutable.Stream.Empty
 /**
   * Created by Nenyi on 12/01/2017.
   */
@@ -63,8 +65,8 @@ class SimplePodcastTools {
     val mp4tag = tag.asInstanceOf[Mp4Tag]
     val mp4Split = mp4tag.getFirst(Mp4FieldKey.TITLE).split(": ")
     val artist: String = "(" + mp4Split.headOption.get + ")"
-    val title = mp4Split.lastOption.get
-    val album = "(BBC Radio 1)-" + mp4Split.headOption.get
+    val title = mp4Split.lastOption match {case null => "" case t => t.get}
+    val album = "(BBC Radio 1)-" + mp4Split.headOption
     val genre = "Podcast"
     val fileName = artist + "-" + title.replaceAll("[^a-zA-Z0-9\\._ ]+", "")
     new PodcastItem(f, renamePodcastTags(mp4tag, new BBCTags(artist, title, album, album, genre)), fileName, "")
