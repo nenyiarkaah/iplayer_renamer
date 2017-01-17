@@ -64,9 +64,9 @@ class SimplePodcastTools {
     // this is the point where I have to find out which show I am searching for?
     val mp4tag = tag.asInstanceOf[Mp4Tag]
     val mp4Split = mp4tag.getFirst(Mp4FieldKey.TITLE).split(": ")
-    val artist: String = mp4Split.headOption match {case null => "" case a => "(" ++ a.get ++ ")"}
-    val title = mp4Split.lastOption match {case null => "" case t => t.get}
-    val album = mp4Split.headOption match {case null => "" case a => "(BBC Radio 1)-" ++ a.get}
+    val artist: String = mp4Split.headOption match {case None => "Unknown" case Some(a) => "(" ++ a ++ ")"}
+    val title = mp4Split.lastOption match {case None => "Unknown" case Some(t) => t}
+    val album = mp4Split.headOption match {case None => "Unknown" case Some(a) => "(BBC Radio 1)-" ++ a}
     val genre = "Podcast"
     val fileName = artist + "-" + title.replaceAll("[^a-zA-Z0-9\\._ ]+", "")
     new PodcastItem(f, renamePodcastTags(mp4tag, new BBCTags(artist, title, album, album, genre)), fileName, "")
@@ -104,6 +104,6 @@ class SimplePodcastTools {
     val validDirs =  dirs.map(d => if(simpleFileTools.convertToMB(simpleFileTools.getFileFolderSize(d) + size) > 4140 || d.list().length != 0) d)
       .filter(_ != ()).asInstanceOf[List[File]]
 
-    new PodcastItem(item.podcastFile, item.podcastTag, item.fileName, simpleFileTools.matchValidDir(dirs, validDirs, destDir).get.getAbsolutePath)
+    new PodcastItem(item.podcastFile, item.podcastTag, item.fileName, simpleFileTools.matchValidDir(dirs, validDirs, destDir).getAbsolutePath)
   }
 }

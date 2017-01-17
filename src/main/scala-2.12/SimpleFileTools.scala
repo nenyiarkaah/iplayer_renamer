@@ -64,19 +64,19 @@ class SimpleFileTools {
       dir.mkdir()
   }
 
-  def matchValidDir(dirs: List[File], validDirs: List[File], parent: String): Option[File] = validDirs match {
+  def matchValidDir(dirs: List[File], validDirs: List[File], parent: String): File = validDirs match {
 //    case null => createNewPodcastDestination(dirs, parent)
     case Nil => createNewPodcastDestination(dirs, parent)
-    case _ => validDirs.headOption
+    case _ => validDirs.headOption match {case None => createNewPodcastDestination(dirs, parent) case Some(v) => v}
   }
 
-  def createNewPodcastDestination(dirs: List[File], parent: String): Option[File] = {
+  def createNewPodcastDestination(dirs: List[File], parent: String): File = {
     val file = dirs match {
       case List() => incrementAndCheckNewDirectory("", parent)
       case _ => incrementAndCheckNewDirectory(dirs.map(_.getName).sorted.last, dirs.map(_.getParent).sorted.last)
     }
     val dir = new File(file)
-    Option(dir)
+    dir
   }
 
   def incrementAndCheckNewDirectory(folderId: String, parent: String): String = {
@@ -94,8 +94,8 @@ class SimpleFileTools {
     }
     def increment(id: String): String = {
       val splitId = id.split("\\.")
-      val integer = splitId.headOption.get.toInt
-      val decimal = splitId.lastOption.get.toInt
+      val integer = splitId.headOption match {case None => 1 case Some(t) => t.toInt}
+      val decimal = splitId.lastOption match {case None => 0 case Some(d) => d.toInt}
       val newId =
         if (decimal == 9) {
           (integer + 1).toString + "." + 0.toString
@@ -122,7 +122,7 @@ class SimpleFileTools {
 
   def movePodcastLegacy(item: PodcastItem) = {
     val source = item.podcastFile.toPath
-    val extension = item.podcastFile.getName.split('.').drop(-1).lastOption
+    val extension = item.podcastFile.getName.split('.').drop(-1).lastOption match {case None => "Unknown" case Some(e) => e}
     val destination = new File(item.destDir + getSeparator + item.fileName).toPath
     Files.move(source, destination, StandardCopyOption.ATOMIC_MOVE)
   }
