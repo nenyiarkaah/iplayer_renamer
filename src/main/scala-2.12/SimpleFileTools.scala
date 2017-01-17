@@ -51,8 +51,8 @@ class SimpleFileTools {
 
   def renameFile(item: PodcastItem): PodcastItem = {
     val file = item.podcastFile
-    val extension = file.getName.split('.').drop(-1).lastOption
-    val fileName = file.getParent + getSeparator + item.fileName + "." + extension.get
+    val extension = file.getName.split('.').drop(-1).lastOption match {case None => "Unknown" case Some(e) => e}
+    val fileName = file.getParent + getSeparator + item.fileName + "." + extension
     val renamedFile = new File(fileName)
     file.renameTo(renamedFile)
     new PodcastItem(renamedFile, item.podcastTag, renamedFile.getName, item.destDir)
