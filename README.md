@@ -1,0 +1,2 @@
+# iplayer_renamer
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/95355e55c62341a18222079a1a55c9ae)](https://www.codacy.com/app/nenyiarkaah/iplayer_renamer?utm_source=github.com&utm_medium=referral&utm_content=nenyiarkaah/iplayer_renamer&utm_campaign=badger)
